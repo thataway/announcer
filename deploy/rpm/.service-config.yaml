@@ -1,0 +1,14 @@
+# ---
+
+trace:
+  enable: false
+
+metrics:
+  enable: true
+
+services:
+  announce:
+    interface-name: dummy0
+
+server:
+  endpoint: unix:///var/run/<service>.sock
