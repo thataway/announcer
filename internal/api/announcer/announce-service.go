@@ -2,8 +2,6 @@ package announcer
 
 import (
 	"context"
-	_ "embed"
-	"encoding/json"
 	"net"
 	"net/url"
 	"runtime"
@@ -12,9 +10,10 @@ import (
 
 	grpcRt "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
-	"github.com/thataway/announcer/pkg/announcer"
 	"github.com/thataway/common-lib/pkg/slice"
 	"github.com/thataway/common-lib/server"
+	apiHelper "github.com/thataway/protos/pkg/api"
+	"github.com/thataway/protos/pkg/api/announcer"
 	"github.com/vishvananda/netlink"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -24,13 +23,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-//GetSwaggerDocs get swagger spec docs
-func GetSwaggerDocs() (*server.SwaggerSpec, error) {
-	const api = "GetSwaggerDocs"
-	ret := new(server.SwaggerSpec)
-	err := json.Unmarshal(rawSwagger, ret)
-	return ret, errors.Wrap(err, api)
-}
+//"github.com/thataway/announcer/pkg/announcer"
 
 //NewAnnounceService creates AnnounceService as server.APIService
 func NewAnnounceService(ctx context.Context, netInterfaceName string) (server.APIService, error) {
@@ -61,8 +54,8 @@ var (
 	_ server.APIGatewayProxy          = (*announceService)(nil)
 	_ server.APIServiceOnStopEvent    = (*announceService)(nil)
 
-	//go:embed api.swagger.json
-	rawSwagger []byte
+	//GetSwaggerDocs get swagger spec docs
+	GetSwaggerDocs = apiHelper.Announcer.LoadSwagger
 )
 
 const (
